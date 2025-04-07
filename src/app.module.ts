@@ -31,7 +31,7 @@ import { UsersModule } from './users/users.module';
 import { BucketModule } from './utils/S3/s3_bucket_separation_script/bucket.module';
 import { AllExceptionsFilter } from './utils/exceptionFilters/exception.filter';
 
-import { UnhandledRejectionLogger } from './utils/exceptionFilters/unhandledRejection.controller';
+
 import { SlackModule } from './slack/slack.module';
 
 @Module({
@@ -74,18 +74,16 @@ import { SlackModule } from './slack/slack.module';
     }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async () => ({
+      useFactory: async (configService: ConfigService) => ({
         transport: {
-          host: process.env.SES_HOST,
-          secure: true,
-          port: 465,
+          service: 'gmail',
           auth: {
-            user: process.env.SES_AUTH_USER,
-            pass: process.env.SES_AUTH_PASSWORD,
+            user: configService.get<string>('GMAIL_USER'),
+            pass: configService.get<string>('GMAIL_APP_PASSWORD'),
           },
         },
         defaults: {
-          from: process.env.SES_AUTH_FROM,
+          from: configService.get<string>('GMAIL_USER'),
         },
         template: {
           dir: join(__dirname, 'mails/templates'),
@@ -103,7 +101,7 @@ import { SlackModule } from './slack/slack.module';
     BucketModule,
   ],
 
-  controllers: [AppController, UnhandledRejectionLogger],
+  controllers: [AppController],
   providers: [
     AppService,
     {

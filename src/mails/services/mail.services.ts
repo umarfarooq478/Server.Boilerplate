@@ -58,10 +58,51 @@ export class MailService {
         html: htmlContent,
       });
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(
         'An Error Occured. Please try again.',
       );
     }
   }
 
+  async sendEmailWithGmail(
+    templateName: string,
+    dynamicData:
+      | IAccountConfirmation
+      | IForgotPassword
+      | IAccountConfirmationInstructor
+      | IPaymentConfirmationClient
+      | IContactUs,
+    recipentEmail: string,
+    subject: string,
+  ) {
+    try {
+      // Construct the path to the template
+      const templatePath = path.join(
+        __dirname,
+        `../templates/${templateName}.hbs`,
+      );
+
+      // Read the Handlebars template
+      const templateSource = fs.readFileSync(templatePath, 'utf-8');
+
+      // Compile the Handlebars template
+      const template = handlebars.compile(templateSource);
+
+      // Use the compiled template to generate HTML content
+      const htmlContent = template(dynamicData);
+
+      await this.mailerService.sendMail({
+        from: this.configService.get<string>('GMAIL_USER'),
+        to: recipentEmail,
+        subject: subject,
+        html: htmlContent,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An Error Occurred. Please try again.',
+      );
+    }
+  }
 }

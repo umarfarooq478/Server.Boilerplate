@@ -34,16 +34,6 @@ export class SlackService {
     }
   }
 
-  async sendAlert(type: string, data: any) {
-    const template = messageTemplates[type] || messageTemplates.alert;
-    const message = this.formatMessage(template, data);
-
-    try {
-      await this.httpService.axiosRef.post(this.webhookUrl, message);
-    } catch (error) {
-      console.error('Failed to send Slack alert:', error);
-    }
-  }
 
   private formatMessage(template: any, data: any) {
     // Deep clone the template to avoid modifying the original

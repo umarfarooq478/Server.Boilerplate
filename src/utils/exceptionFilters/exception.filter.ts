@@ -16,7 +16,7 @@ dotenv.config();
 /* The `AllExceptionsFilter` class is an exception filter in TypeScript that handles all exceptions and
 logs them using a custom logger. */
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(@Inject(CustomLogger) private readonly logger: CustomLogger) {}
+  constructor(@Inject(CustomLogger) private readonly logger: CustomLogger) { }
   /**
    * The catch function handles exceptions in a TypeScript application and returns an appropriate
    * response based on the type of exception.
@@ -78,13 +78,5 @@ process.on('unhandledRejection', async (reason, promise) => {
     promise,
   };
 
-  try {
-    const response = await axios.post(
-      `${process.env.SERVER_URL}/api/unhandled_rejections`,
-      data,
-    );
-    console.log('Posted unhandled rejection data successfully:', response.data);
-  } catch (error) {
-    console.error('Error posting unhandled rejection data:', error.message);
-  }
+
 });

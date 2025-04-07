@@ -6,4 +6,4 @@ import { HttpModule } from '@nestjs/axios';
   providers: [MailService],
   exports: [MailService],
 })
-export class MailModule {}
+export class MailModule { }
